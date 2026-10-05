@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - Departmental Store</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/main.js"></script>
+</head>
+
+<body>
+
+    <nav>
+        <h2>Departmental Store</h2>
+
+        <div>
+            <a href="index.html">Home</a>
+            <a href="products.html">Products</a>
+            <a href="login.html">Login</a>
+            <a href="cart.html">Cart</a>
+        </div>
+    </nav>
+
+
+    <section class="cart-section">
+
+        <h1>Shopping Cart</h1>
+
+        <div id="cart-container"></div>
+
+        <div class="cart-total">
+            <h2>Total: ₹<span id="cart-total">0</span></h2>
+
+            <button onclick="checkout()">
+                Checkout
+            </button>
+        </div>
+
+    </section>
+
+
+    <script>
+
+        function displayCart() {
+
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+            let cartContainer = document.getElementById("cart-container");
+            let totalElement = document.getElementById("cart-total");
+
+            cartContainer.innerHTML = "";
+
+            let total = 0;
+
+            if (cart.length === 0) {
+
+                cartContainer.innerHTML = `
+                    <div class="empty-cart">
+                        <h2>Your cart is empty</h2>
+                        <a href="products.html">Continue Shopping</a>
+                    </div>
+                `;
+
+                totalElement.innerText = "0";
+
+                return;
+            }
+
+
+            cart.forEach((product, index) => {
+
+                total = total + product.price;
+
+                let productDiv = document.createElement("div");
+
+                productDiv.className = "cart-item";
+
+                productDiv.innerHTML = `
+                    <div>
+                        <h3>${product.name}</h3>
+                        <p>Price: ₹${product.price}</p>
+                    </div>
+
+                    <button onclick="removeFromCart(${index})">
+                        Remove
+                    </button>
+                `;
+
+                cartContainer.appendChild(productDiv);
+
+            });
+
+
+            totalElement.innerText = total;
+
+        }
+
+
+        function removeFromCart(index) {
+
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+            cart.splice(index, 1);
+
+            localStorage.setItem("cart", JSON.stringify(cart));
+
+            displayCart();
+
+        }
+
+
+        function checkout() {
+
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+            if (cart.length === 0) {
+
+                alert("Your cart is empty");
+
+                return;
+            }
+
+            alert("Order placed successfully!");
+
+            localStorage.removeItem("cart");
+
+            displayCart();
+
+        }
+
+
+        displayCart();
+
+    </script>
+
+</body>
+</html>
